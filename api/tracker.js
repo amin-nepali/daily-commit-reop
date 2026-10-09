@@ -152,7 +152,7 @@ async function getRepositoryDays(repository, branch, year, token) {
     throw error;
   }
 
-  const query = `query RepositoryCommits($owner: String!, $name: String!, $ref: String!, $from: DateTime!, $to: DateTime!, $after: String) {
+  const query = `query RepositoryCommits($owner: String!, $name: String!, $ref: String!, $from: GitTimestamp!, $to: GitTimestamp!, $after: String) {
     repository(owner: $owner, name: $name) {
       ref(qualifiedName: $ref) {
         target {
