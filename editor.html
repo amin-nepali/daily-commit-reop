@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Repository editor</title>
+    <style>
+      :root { color-scheme: light dark; font: 16px/1.5 system-ui, sans-serif; }
+      body { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+      h1 { margin-bottom: .25rem; }
+      .muted { opacity: .75; }
+      .toolbar, .editor-actions { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; margin: 1rem 0; }
+      input, button, textarea { font: inherit; }
+      input { padding: .55rem; min-width: 14rem; }
+      button { padding: .5rem .75rem; cursor: pointer; }
+      #layout { display: grid; grid-template-columns: minmax(14rem, 1fr) 3fr; gap: 1rem; min-height: 55vh; }
+      #files { border: 1px solid #8888; padding: .5rem; overflow: auto; max-height: 65vh; }
+      #files button { display: block; width: 100%; text-align: left; border: 0; background: transparent; overflow-wrap: anywhere; }
+      #files button:hover, #files button[aria-current="true"] { background: #8883; }
+      #editor { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+      #selected { overflow-wrap: anywhere; }
+      textarea { box-sizing: border-box; width: 100%; min-height: 48vh; padding: .75rem; font: 14px/1.5 ui-monospace, monospace; }
+      #status { min-height: 1.5em; }
+      @media (max-width: 700px) { #layout { grid-template-columns: 1fr; } #files { max-height: 30vh; } }
+    </style>
+  </head>
+  <body>
+    <h1>Repository editor</h1>
+    <p class="muted">Browse and explicitly edit files in amin-nepali/daily-commit-reop on main. Changes are committed only when you click Commit.</p>
+    <div class="toolbar">
+      <label for="access-key">Web access key</label>
+      <input id="access-key" type="password" autocomplete="off" spellcheck="false">
+      <button id="load" type="button">Load repository</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+    <main id="layout">
+      <nav id="files" aria-label="Repository files"></nav>
+      <section id="editor" aria-label="File editor">
+        <strong id="selected">Select a file to view it.</strong>
+        <textarea id="content" aria-label="File contents" spellcheck="false" disabled></textarea>
+        <div class="editor-actions">
+          <label for="message">Commit message</label>
+          <input id="message" maxlength="120" value="chore: update repository file" disabled>
+          <button id="commit" type="button" disabled>Commit to main</button>
+        </div>
+      </section>
+    </main>
+    <script>
+      const keyInput = document.querySelector("#access-key");
+      const loadButton = document.querySelector("#load");
+      const filesElement = document.querySelector("#files");
+      const contentElement = document.querySelector("#content");
+      const messageElement = document.querySelector("#message");
+      const commitButton = document.querySelector("#commit");
+      const selectedElement = document.querySelector("#selected");
+      const statusElement = document.querySelector("#status");
+      let currentFile = null;
+
+      function setStatus(message) {
+        statusElement.textContent = message;
+      }
+
+      async function api(url, options = {}) {
+        const response = await fetch(url, {
+          ...options,
+          headers: {
+            "x-automation-key": keyInput.value,
+            ...(options.body ? { "content-type": "application/json" } : {}),
+            ...options.headers,
+          },
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || `Request failed (${response.status}).`);
+        return result;
+      }
+
+      async function selectFile(path) {
+        setStatus(`Loading ${path}...`);
+        const file = await api(`/api/repository?path=${encodeURIComponent(path)}`);
+        currentFile = file;
+        selectedElement.textContent = file.path;
+        contentElement.value = file.content;
+        contentElement.disabled = false;
+        messageElement.disabled = false;
+        commitButton.disabled = false;
+        for (const button of filesElement.querySelectorAll("button")) {
+          button.setAttribute("aria-current", String(button.dataset.path === path));
+        }
+        setStatus("File loaded. Review your edits before committing.");
+      }
+
+      loadButton.addEventListener("click", async () => {
+        if (!keyInput.value) return setStatus("Enter the Vercel AUTOMATION_WEB_KEY.");
+        loadButton.disabled = true;
+        setStatus("Loading repository file list...");
+        try {
+          const files = await api("/api/repository");
+          filesElement.replaceChildren();
+          for (const file of files) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = file.path;
+            button.dataset.path = file.path;
+            button.addEventListener("click", () => {
+              selectFile(file.path).catch((error) => setStatus(error.message));
+            });
+            filesElement.append(button);
+          }
+          setStatus(`${files.length} file(s) loaded from main.`);
+        } catch (error) {
+          setStatus(error.message);
+        } finally {
+          loadButton.disabled = false;
+        }
+      });
+
+      commitButton.addEventListener("click", async () => {
+        if (!currentFile) return;
+        if (!window.confirm(`Commit changes to ${currentFile.path} on main?`)) return;
+        commitButton.disabled = true;
+        setStatus("Sending reviewed file change to GitHub...");
+        try {
+          const result = await api("/api/commit", {
+            method: "POST",
+            body: JSON.stringify({
+              path: currentFile.path,
+              content: contentElement.value,
+              sha: currentFile.sha,
+              message: messageElement.value,
+            }),
+          });
+          currentFile.sha = result.sha;
+          setStatus(`Committed successfully: ${result.commitUrl}`);
+        } catch (error) {
+          setStatus(error.message);
+        } finally {
+          commitButton.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
