@@ -1,0 +1,35 @@
+name: Random Daily Commits
+
+on:
+  schedule:
+    # Runs 5 times daily (At 02:00, 07:00, 12:00, 16:00, and 20:00 UTC)
+    - cron: '0 2,7,12,16,20 * * *'
+  workflow_dispatch: # Allows manual triggering from the Actions tab
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Grants write permissions to push commits to the repository
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Make Multiple Commits
+        run: |
+          # Generate a random count between 2 and 5
+          COUNT=$((2 + RANDOM % 4))
+          echo "Making $COUNT commits in this run..."
+
+          for i in $(seq 1 $COUNT); do
+            echo "Automated commit $i of $COUNT at $(date -u)" >> activity_log.txt
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add activity_log.txt
+            git commit -m "chore: activity update $i [skip ci]"
+            sleep 2 # Small pause between commits
+          done
+
+      - name: Push Changes
+        run: git push origin main
