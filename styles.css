@@ -157,6 +157,34 @@ body > header button:hover {
   background: rgba(69, 223, 155, 0.09);
 }
 
+.nav-actions {
+  flex-shrink: 0;
+}
+
+.main-tracker-link {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid rgba(69, 223, 155, 0.28);
+  border-radius: 14px;
+  color: #dff9ed;
+  background: linear-gradient(135deg, rgba(43, 178, 121, 0.2), rgba(30, 130, 94, 0.1));
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.main-tracker-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(69, 223, 155, 0.55);
+  background: linear-gradient(135deg, rgba(43, 178, 121, 0.3), rgba(30, 130, 94, 0.18));
+}
+
 main.max-w-4xl {
   width: min(100%, 1160px);
   max-width: 1160px;
@@ -457,6 +485,19 @@ main.max-w-4xl > section:nth-child(3) h3 {
     width: 38px;
     height: 38px;
     border-radius: 12px;
+  }
+
+  .main-tracker-link {
+    min-height: 38px;
+    gap: 5px;
+    padding: 0 9px;
+    border-radius: 12px;
+    font-size: 0.68rem;
+  }
+
+  .main-tracker-link svg {
+    width: 15px;
+    height: 15px;
   }
 
   main.max-w-4xl > section:first-child > div {

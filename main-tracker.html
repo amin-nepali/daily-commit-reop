@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#080b12">
+    <meta name="description" content="View amin-nepali's yearly GitHub contributions across public repositories or inspect a single branch.">
+    <title>Main tracker · Commit Tracker Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="main-tracker.css">
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="main-tracker.js" defer></script>
+  </head>
+  <body class="main-tracker-page">
+    <header class="tracker-header">
+      <div class="tracker-header-inner">
+        <a class="tracker-brand" href="index.html">
+          <span class="tracker-brand-icon"><i data-lucide="git-commit" aria-hidden="true"></i></span>
+          <span>
+            <strong>Commit Tracker Pro</strong>
+            <small>GitHub activity overview</small>
+          </span>
+        </a>
+        <nav class="tracker-nav" aria-label="Main navigation">
+          <a class="tracker-nav-link" href="index.html">
+            <i data-lucide="arrow-left" aria-hidden="true"></i>
+            <span>Single repository</span>
+          </a>
+          <a class="profile-link" href="https://github.com/amin-nepali" target="_blank" rel="noopener noreferrer">
+            <i data-lucide="external-link" aria-hidden="true"></i>
+            <span>GitHub profile</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="overview-main">
+      <section class="profile-hero">
+        <div class="profile-identity">
+          <img id="profile-avatar" class="profile-avatar" alt="" width="68" height="68">
+          <div>
+            <p class="eyebrow">ACCOUNT OVERVIEW</p>
+            <h1 id="profile-name">Amin Nepali</h1>
+            <a id="profile-login" class="profile-login" href="https://github.com/amin-nepali" target="_blank" rel="noopener noreferrer">@amin-nepali</a>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <span id="data-status" class="data-status" role="status" aria-live="polite">Loading GitHub activity…</span>
+          <button id="refresh-profile" class="icon-button" type="button" aria-label="Refresh profile activity" title="Refresh">
+            <i data-lucide="rotate-cw" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section>
+
+      <section class="overview-stats" aria-label="Yearly account statistics">
+        <article class="overview-stat overview-stat-primary">
+          <span class="stat-icon"><i data-lucide="activity" aria-hidden="true"></i></span>
+          <div>
+            <span id="total-label" class="stat-label">Contributions this year</span>
+            <strong id="total-count" class="stat-value">—</strong>
+          </div>
+        </article>
+        <article class="overview-stat">
+          <span class="stat-icon stat-icon-blue"><i data-lucide="book-marked" aria-hidden="true"></i></span>
+          <div>
+            <span class="stat-label">Public repositories</span>
+            <strong id="repository-count" class="stat-value">—</strong>
+          </div>
+        </article>
+        <article class="overview-stat">
+          <span class="stat-icon stat-icon-violet"><i data-lucide="calendar-days" aria-hidden="true"></i></span>
+          <div>
+            <span class="stat-label">Active days</span>
+            <strong id="active-days" class="stat-value">—</strong>
+          </div>
+        </article>
+      </section>
+
+      <section class="contribution-panel" aria-labelledby="contribution-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">CONTRIBUTION HISTORY</p>
+            <h2 id="contribution-title"><span id="contribution-year">2026</span> contributions</h2>
+            <p id="chart-description" class="panel-description">Every contribution across amin-nepali’s GitHub profile.</p>
+          </div>
+          <label class="year-picker">
+            <span>Year</span>
+            <select id="year-select" aria-label="Contribution year"></select>
+          </label>
+        </div>
+
+        <div class="contribution-scroll" tabindex="0" aria-label="Scrollable contribution graph">
+          <div class="contribution-chart">
+            <div class="weekday-labels" aria-hidden="true">
+              <span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span>
+            </div>
+            <div class="contribution-calendar">
+              <div id="month-labels" class="month-labels" aria-hidden="true"></div>
+              <div id="contribution-grid" class="contribution-grid" aria-label="Daily contributions"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-footer">
+          <p id="day-detail" class="day-detail">Choose a day to see its contribution count.</p>
+          <div class="contribution-legend" aria-label="Contribution level legend">
+            <span>Less</span>
+            <i class="contribution-cell level-0"></i>
+            <i class="contribution-cell level-1"></i>
+            <i class="contribution-cell level-2"></i>
+            <i class="contribution-cell level-3"></i>
+            <i class="contribution-cell level-4"></i>
+            <span>More</span>
+          </div>
+        </div>
+        <p id="truncation-note" class="truncation-note" hidden>
+          This branch has more than 1,000 commits in the selected year. The graph shows the first 1,000.
+        </p>
+      </section>
+
+      <section class="repositories-panel" aria-labelledby="repositories-title">
+        <div class="panel-heading repository-heading">
+          <div>
+            <p class="eyebrow">REPOSITORY ACTIVITY</p>
+            <h2 id="repositories-title">All repositories</h2>
+            <p class="panel-description">Explore the account-wide contribution graph or inspect one repository branch.</p>
+          </div>
+          <form id="repository-filter" class="repository-filter">
+            <label>
+              <span>Repository</span>
+              <select id="repository-select" aria-label="Repository">
+                <option value="">All repositories</option>
+              </select>
+            </label>
+            <label id="branch-field" hidden>
+              <span>Branch</span>
+              <input id="branch-input" type="text" value="main" maxlength="255" autocomplete="off" spellcheck="false">
+            </label>
+            <button id="view-branch" class="primary-button" type="submit" hidden>
+              View branch
+            </button>
+          </form>
+        </div>
+        <div class="repository-table-wrap">
+          <table class="repository-table">
+            <thead>
+              <tr>
+                <th scope="col">Repository</th>
+                <th scope="col">Default branch</th>
+                <th scope="col">Last updated</th>
+                <th scope="col">Activity</th>
+              </tr>
+            </thead>
+            <tbody id="repository-list">
+              <tr><td colspan="4" class="table-empty">Loading public repositories…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p id="private-note" class="private-note" hidden>
+          GitHub can include private-repository activity in the profile total without revealing private repository names.
+        </p>
+      </section>
+    </main>
+
+    <footer class="overview-footer">
+      <span>Public repository activity for</span>
+      <a href="https://github.com/amin-nepali" target="_blank" rel="noopener noreferrer">github.com/amin-nepali</a>
+    </footer>
+  </body>
+</html>
