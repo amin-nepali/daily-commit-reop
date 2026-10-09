@@ -36,7 +36,6 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* iOS Safe Area Paddings & Smooth Scrolling */
     body {
       padding-top: env(safe-area-inset-top);
       padding-bottom: env(safe-area-inset-bottom);
@@ -46,7 +45,6 @@
       user-select: none;
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -58,11 +56,7 @@
       background: rgba(75, 85, 99, 0.5);
       border-radius: 9999px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(107, 114, 128, 0.8);
-    }
 
-    /* Heatmap Grid Layout */
     .heatmap-grid {
       display: grid;
       grid-template-rows: repeat(7, minmax(0, 1fr));
@@ -73,7 +67,7 @@
 </head>
 <body class="bg-gray-950 text-gray-100 min-h-screen font-sans antialiased flex flex-col pb-12">
 
-  <!-- Sticky iOS App Header -->
+  <!-- Sticky Header -->
   <header class="sticky top-0 z-40 bg-gray-900/80 backdrop-blur-md border-b border-gray-800/80 px-4 py-3">
     <div class="max-w-4xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2.5">
@@ -82,7 +76,7 @@
         </div>
         <div>
           <h1 class="text-base font-bold text-white leading-tight">Commit Tracker Pro</h1>
-          <p id="headerSubtext" class="text-xs text-gray-400">Target: octocat/Hello-World</p>
+          <p id="headerSubtext" class="text-xs text-gray-400">Target: amin-nepali/daily-commit-repo</p>
         </div>
       </div>
 
@@ -97,12 +91,11 @@
     </div>
   </header>
 
-  <!-- Main Container -->
+  <!-- Main Content -->
   <main class="max-w-4xl w-full mx-auto px-4 py-6 space-y-6 flex-1">
 
-    <!-- Overview Stats Cards Grid -->
+    <!-- Stats Cards Grid -->
     <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <!-- Streak -->
       <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg backdrop-blur-sm">
         <div class="flex items-center justify-between text-gray-400 mb-2">
           <span class="text-xs font-semibold uppercase tracking-wider">Active Streak</span>
@@ -114,7 +107,6 @@
         </div>
       </div>
 
-      <!-- Today's Count -->
       <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg backdrop-blur-sm">
         <div class="flex items-center justify-between text-gray-400 mb-2">
           <span class="text-xs font-semibold uppercase tracking-wider">Today</span>
@@ -126,7 +118,6 @@
         </div>
       </div>
 
-      <!-- Total Commits (Loaded) -->
       <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg backdrop-blur-sm">
         <div class="flex items-center justify-between text-gray-400 mb-2">
           <span class="text-xs font-semibold uppercase tracking-wider">Total Tracked</span>
@@ -138,7 +129,6 @@
         </div>
       </div>
 
-      <!-- Daily Average -->
       <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 flex flex-col justify-between shadow-lg backdrop-blur-sm">
         <div class="flex items-center justify-between text-gray-400 mb-2">
           <span class="text-xs font-semibold uppercase tracking-wider">Daily Avg</span>
@@ -151,7 +141,7 @@
       </div>
     </section>
 
-    <!-- Contribution Heatmap -->
+    <!-- Contribution Matrix -->
     <section class="bg-gray-900/90 border border-gray-800 rounded-2xl p-5 shadow-lg backdrop-blur-sm">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
@@ -162,7 +152,6 @@
           <p class="text-xs text-gray-400">Interactive visual log. Tap any cell to view daily details.</p>
         </div>
 
-        <!-- Filter Range Selector -->
         <div class="flex items-center bg-gray-950 p-1 rounded-xl border border-gray-800 text-xs self-start sm:self-auto">
           <button onclick="setTimeframe(30)" id="tf-30" class="px-3 py-1 rounded-lg font-medium transition text-gray-400 hover:text-white">30D</button>
           <button onclick="setTimeframe(60)" id="tf-60" class="px-3 py-1 rounded-lg font-medium transition text-gray-400 hover:text-white">60D</button>
@@ -170,14 +159,10 @@
         </div>
       </div>
 
-      <!-- Heatmap Scroll Container -->
       <div class="overflow-x-auto pb-2">
-        <div id="heatmapGrid" class="heatmap-grid min-w-[500px] py-1">
-          <!-- Heatmap squares injected dynamically -->
-        </div>
+        <div id="heatmapGrid" class="heatmap-grid min-w-[500px] py-1"></div>
       </div>
 
-      <!-- Legend -->
       <div class="flex items-center justify-end gap-2 text-xs text-gray-400 mt-3 pt-3 border-t border-gray-800/60">
         <span>Less</span>
         <span class="w-3 h-3 rounded-sm bg-gray-800 border border-gray-700"></span>
@@ -189,21 +174,16 @@
       </div>
     </section>
 
-    <!-- Daily Breakdown & Selected Date Commits -->
+    <!-- Details Section -->
     <section class="grid md:grid-cols-5 gap-6">
-
-      <!-- Days List (Left Column, 2 cols) -->
       <div class="md:col-span-2 bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-lg backdrop-blur-sm flex flex-col h-[400px]">
         <h3 class="text-sm font-bold text-gray-200 mb-3 flex items-center justify-between">
           <span>Daily Log</span>
           <span id="logDaysCount" class="text-xs text-gray-400 font-normal">0 active days</span>
         </h3>
-        <div id="dailyLogList" class="space-y-2 overflow-y-auto flex-1 pr-1">
-          <!-- Daily items injected dynamically -->
-        </div>
+        <div id="dailyLogList" class="space-y-2 overflow-y-auto flex-1 pr-1"></div>
       </div>
 
-      <!-- Selected Day Commit Details (Right Column, 3 cols) -->
       <div class="md:col-span-3 bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-lg backdrop-blur-sm flex flex-col h-[400px]">
         <div class="border-b border-gray-800 pb-3 mb-3 flex items-center justify-between">
           <div>
@@ -242,12 +222,12 @@
       <div class="space-y-3 text-sm">
         <div>
           <label class="block text-xs font-semibold text-gray-400 mb-1">GitHub Username</label>
-          <input id="inputUsername" type="text" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-green-500 text-sm" placeholder="e.g. octocat">
+          <input id="inputUsername" type="text" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-green-500 text-sm" placeholder="e.g. amin-nepali">
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-gray-400 mb-1">Repository Name</label>
-          <input id="inputRepo" type="text" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-green-500 text-sm" placeholder="e.g. Hello-World">
+          <input id="inputRepo" type="text" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-green-500 text-sm" placeholder="e.g. daily-commit-repo">
         </div>
 
         <div>
@@ -256,11 +236,9 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1">GitHub Personal Access Token (Permanent)</label>
-          <input id="inputToken" type="password" disabled class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-gray-400 focus:outline-none text-sm cursor-not-allowed opacity-75" value="••••••••••••••••••••••••••••••••••••••••">
-          <p class="text-[10px] text-green-400 mt-1 flex items-center gap-1">
-            <i data-lucide="lock" class="w-3 h-3"></i> Permanent access token permanently configured. User editing disabled.
-          </p>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">GitHub Access Token (Optional)</label>
+          <input id="inputToken" type="password" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-green-500 text-sm" placeholder="ghp_xxxxxxxxxxxx (Optional for public repos)">
+          <p class="text-[10px] text-gray-500 mt-1">If your repository is private, paste a fine-grained GitHub token with `Contents: Read-only` access.</p>
         </div>
       </div>
 
@@ -271,65 +249,57 @@
     </div>
   </div>
 
-  <!-- JavaScript Application Logic -->
   <script>
-    // PERMANENT HARDCODED GITHUB TOKEN (Read-only, users cannot override)
-    const PERMANENT_TOKEN = "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";
-
-    // Application State
     let state = {
-      username: localStorage.getItem('gt_username') || 'octocat',
-      repo: localStorage.getItem('gt_repo') || 'Hello-World',
+      username: localStorage.getItem('gt_username') || 'amin-nepali',
+      repo: localStorage.getItem('gt_repo') || 'daily-commit-repo',
       branch: localStorage.getItem('gt_branch') || 'main',
+      token: localStorage.getItem('gt_token') || '',
       timeframeDays: 90,
       commits: [],
       groupedCommits: {},
       selectedDate: null
     };
 
-    // Initialize UI
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       document.getElementById('inputUsername').value = state.username;
       document.getElementById('inputRepo').value = state.repo;
       document.getElementById('inputBranch').value = state.branch;
+      document.getElementById('inputToken').value = state.token;
       
       fetchCommitData();
     });
 
-    // Save Settings
     function saveSettings() {
-      state.username = document.getElementById('inputUsername').value.trim() || 'octocat';
-      state.repo = document.getElementById('inputRepo').value.trim() || 'Hello-World';
+      state.username = document.getElementById('inputUsername').value.trim() || 'amin-nepali';
+      state.repo = document.getElementById('inputRepo').value.trim() || 'daily-commit-repo';
       state.branch = document.getElementById('inputBranch').value.trim() || 'main';
+      state.token = document.getElementById('inputToken').value.trim();
 
       localStorage.setItem('gt_username', state.username);
       localStorage.setItem('gt_repo', state.repo);
       localStorage.setItem('gt_branch', state.branch);
+      localStorage.setItem('gt_token', state.token);
 
       closeModal('settingsModal');
       fetchCommitData();
     }
 
-    // Modal Helpers
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // Change Timeframe Filter
     function setTimeframe(days) {
       state.timeframeDays = days;
       [30, 60, 90].forEach(d => {
         const btn = document.getElementById(`tf-${d}`);
-        if (d === days) {
-          btn.className = "px-3 py-1 rounded-lg font-medium transition bg-green-600 text-white font-semibold shadow";
-        } else {
-          btn.className = "px-3 py-1 rounded-lg font-medium transition text-gray-400 hover:text-white";
-        }
+        btn.className = d === days 
+          ? "px-3 py-1 rounded-lg font-medium transition bg-green-600 text-white font-semibold shadow"
+          : "px-3 py-1 rounded-lg font-medium transition text-gray-400 hover:text-white";
       });
       renderAll();
     }
 
-    // Fetch Commits from GitHub API using Permanent Authorization Header
     async function fetchCommitData() {
       const refreshIcon = document.getElementById('refreshIcon');
       refreshIcon.classList.add('animate-spin');
@@ -340,22 +310,26 @@
       sinceDate.setDate(sinceDate.getDate() - state.timeframeDays);
 
       const headers = {
-        'Accept': 'application/vnd.github.v3+json',
-        'Authorization': `token ${PERMANENT_TOKEN}`
+        'Accept': 'application/vnd.github.v3+json'
       };
+
+      if (state.token) {
+        headers['Authorization'] = `Bearer ${state.token}`;
+      }
 
       try {
         const url = `https://api.github.com/repos/${state.username}/${state.repo}/commits?sha=${state.branch}&since=${sinceDate.toISOString()}&per_page=100`;
         const res = await fetch(url, { headers });
 
         if (!res.ok) {
-          throw new Error(res.status === 404 ? 'Repository or Branch not found.' : `API Error: ${res.statusText}`);
+          const errData = await res.json().catch(() => ({}));
+          const detail = errData.message || res.statusText;
+          throw new Error(`HTTP ${res.status}: ${detail}`);
         }
 
         const data = await res.json();
         state.commits = data;
         
-        // Group commits by local date string YYYY-MM-DD
         state.groupedCommits = {};
         data.forEach(item => {
           const dateObj = new Date(item.commit.committer.date);
@@ -384,7 +358,6 @@
       }
     }
 
-    // Render Components
     function renderAll() {
       renderStats();
       renderHeatmap();
@@ -394,7 +367,6 @@
       }
     }
 
-    // Date Key Helper (YYYY-MM-DD)
     function formatDateKey(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -402,7 +374,6 @@
       return `${year}-${month}-${day}`;
     }
 
-    // Stats Calculation
     function renderStats() {
       const todayStr = formatDateKey(new Date());
       const todayCommits = state.groupedCommits[todayStr]?.length || 0;
@@ -411,11 +382,9 @@
       const totalTracked = state.commits.length;
       document.getElementById('totalCount').textContent = totalTracked;
 
-      // Active Streak
       let streak = 0;
       let checkDate = new Date();
       
-      // If no commits today, check if yesterday had commits to maintain current streak
       if (!state.groupedCommits[formatDateKey(checkDate)]) {
         checkDate.setDate(checkDate.getDate() - 1);
       }
@@ -431,13 +400,11 @@
       }
       document.getElementById('streakCount').innerHTML = `${streak} <span class="text-xs font-normal text-gray-400">days</span>`;
 
-      // Daily Average
       const activeDaysCount = Object.keys(state.groupedCommits).length;
       const avg = activeDaysCount > 0 ? (totalTracked / activeDaysCount).toFixed(1) : '0.0';
       document.getElementById('avgCount').textContent = avg;
     }
 
-    // Heatmap Matrix
     function renderHeatmap() {
       const grid = document.getElementById('heatmapGrid');
       grid.innerHTML = '';
@@ -467,7 +434,6 @@
       });
     }
 
-    // Color Intensity Mapper
     function getHeatmapColor(count) {
       if (count === 0) return 'bg-gray-800/80 border border-gray-700/50';
       if (count === 1) return 'bg-green-950 border border-green-800 text-green-200';
@@ -476,7 +442,6 @@
       return 'bg-green-400 border border-green-300 text-black font-bold';
     }
 
-    // Render Daily Log List
     function renderDailyLog() {
       const container = document.getElementById('dailyLogList');
       container.innerHTML = '';
@@ -522,7 +487,6 @@
       lucide.createIcons();
     }
 
-    // Select Date & Display Detailed Commits
     function selectDate(dateStr) {
       state.selectedDate = dateStr;
       
@@ -579,7 +543,6 @@
       lucide.createIcons();
     }
 
-    // HTML Escape Helper
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
