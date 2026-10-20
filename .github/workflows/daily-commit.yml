@@ -9,6 +9,8 @@ on:
 jobs:
   auto-commit:
     runs-on: ubuntu-latest
+    env:
+      CONTRIBUTION_EMAIL: ${{ vars.CONTRIBUTION_EMAIL }}
     permissions:
       contents: write # Grants write permissions to push commits to the repository
 
@@ -18,14 +20,20 @@ jobs:
 
       - name: Make Multiple Commits
         run: |
+          if [ -z "$CONTRIBUTION_EMAIL" ]; then
+            echo "Set the CONTRIBUTION_EMAIL Actions variable to an email associated with your GitHub account." >&2
+            exit 1
+          fi
+
+          git config user.name "Amin Nepali"
+          git config user.email "$CONTRIBUTION_EMAIL"
+
           # Generate a random count between 2 and 5
           COUNT=$((2 + RANDOM % 4))
           echo "Making $COUNT commits in this run..."
 
           for i in $(seq 1 $COUNT); do
             echo "Automated commit $i of $COUNT at $(date -u)" >> activity_log.txt
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git add activity_log.txt
             git commit -m "chore: activity update $i [skip ci]"
             sleep 2 # Small pause between commits
