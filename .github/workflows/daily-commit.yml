@@ -35,7 +35,7 @@ jobs:
           for i in $(seq 1 $COUNT); do
             echo "Automated commit $i of $COUNT at $(date -u)" >> activity_log.txt
             git add activity_log.txt
-            git commit -m "chore: activity update $i [skip ci]"
+            git commit -m "chore: activity update $i "
             sleep 2 # Small pause between commits
           done
 
